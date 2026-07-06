@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suganth U - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="./assets/logo.jpeg" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- GSAP  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollSmoother.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@700;900&display=swap");
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f7f5f2;
+        cursor: none;
+        scroll-behavior: smooth;
+      }
+
+      .hero-title {
+        font-family: "Roboto", sans-serif;
+        font-weight: 900;
+      }
+
+      .cursor-ball {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 10px #c0392b, 0 0 20px #c0392b, 0 0 30px #c0392b,
+          0 0 40px #c0392b;
+        pointer-events: none;
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-in-out;
+        z-index: 9999;
+      }
+
+      .cursor-inner {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #c23616;
+        box-shadow: 0 0 5px #c23616, 0 0 10px #c23616;
+        pointer-events: none;
+        z-index: 10000;
+      }
+
+      .hovered .cursor-ball {
+        transform: scale(1.5) !important;
+        background-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px #f0f, 0 0 25px #f0f, 0 0 35px #f0f;
+      }
+
+      .image-container:hover .hero-image {
+        transform: rotate(0deg) !important;
+      }
+
+      .service-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+
+      .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .modal-content {
+        background-color: #1a1a1a;
+        color: #fff;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        max-width: 900px;
+        width: 100%;
+        position: relative;
+        animation: slide-in 0.4s ease-out;
+      }
+
+      @keyframes slide-in {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-button {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .close-button:hover {
+        color: #ff00ff;
+      }
+
+      .scroll-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #ffff;
+        border: 2px solid #1a1a1a;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
+
+      .scroll-to-top.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .scroll-to-top svg {
+        color: #1a1a1a;
+        width: 20px;
+        height: 20px;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+
+      .modal-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-overlay-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .modal-overlay.visible .modal-overlay-content {
+        transform: scale(1);
+      }
+
+      .modal-success {
+        color: #10b981;
+      }
+
+      .modal-error {
+        color: #ef4444;
+      }
+      .hero-section-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .tab-content.hidden {
+        display: none;
+      }
+
+      .tab-button.active {
+        background-color: #1a1a1a;
+        color: white;
+      }
+      .progress-bar-container {
+        height: 8px;
+        background-color: #e5e7eb;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        background-color: #f59e0b;
+        transition: width 0.7s ease-in-out;
+        border-radius: 9999px;
+      }
+    </style>
+  </head>
+  <body class="text-[#1a1a1a]">
+    <div id="message-box" class="message-box"></div>
+
+    <div class="cursor-inner"></div>
+    <div class="cursor-ball"></div>
+    <div id="smooth-wrapper">
+      <div id="smooth-content">
+        <header class="p-8 flex justify-between items-center z-10 relative">
+          <div class="text-2xl font-bold logo">Suganth.</div>
+          <nav
+            class="hidden md:flex space-x-8 text-sm uppercase font-medium tracking-wide nav-links"
+          >
+            <a
+              href="#hero"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >Home</a
+            >
+            <a
+              href="#about"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >About</a
+            >
+            <a
+              href="#resume"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >Resume</a
+            >
+            <a
+              href="#services"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >Services</a
+            >
+            <a
+              href="#projects"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >Projects</a
+            >
+            <a
+              href="#contact"
+              class="nav-link hover:text-gray-500 transition-colors"
+              >Contact</a
+            >
+          </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-8 relative overflow-hidden mt-10">
+          <!-- Hero Section -->
+          <section
+            id="hero"
+            class="min-h-[calc(100vh-100px)] flex flex-col items-center justify-center pt-12 mt-[10px] md:pt-0 text-center"
+          >
+            <h1
+              class="hero-title text-6xl md:text-[9.5rem] leading-none tracking-tight mb-8"
+            >
+              SUGANTH UTHAYAKUMARAN
+            </h1>
+
+            <div
+              class="flex flex-col md:flex-row w-full justify-between items-center"
+            >
+              <div
+                class="w-full md:w-1/3 mb-12 md:mb-0 text-center md:text-left flex items-center md:items-start ml-[40px]"
+              >
+                <div class="flex items-center space-x-4 social-links">
+                  <div class="w-[20px] h-px bg-gray-400 mt-0"></div>
+                  <div class="flex space-x-4">
+                    <a
+                      href="https://twitter.com"
+                      target="_blank"
+                      class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                    >
+                      <i class="fab fa-twitter"></i>
+                    </a>
+                    <a
+                      href="https://facebook.com"
+                      target="_blank"
+                      class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                    >
+                      <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a
+                      href="https://github.com"
+                      target="_blank"
+                      class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                    >
+                      <i class="fab fa-github"></i>
+                    </a>
+                    <a
+                      href="https://linkedin.com"
+                      target="_blank"
+                      class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                    >
+                      <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a
+                      href="https://medium.com"
+                      target="_blank"
+                      class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                    >
+                      <i class="fab fa-medium-m"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="relative w-full md:w-1/3 flex justify-center mb-12 md:mb-0 mt-[-140px] hero-image-container"
+              >
+                <img
+                  src="./assets/Avatar1.jpeg"
+                  alt="Suganth U"
+                  class="hero-image w-[300px] md:w-[380px] md:h-[450px] object-cover rounded-2xl shadow-lg border-4 border-white transition-transform duration-300 rotate-[-5deg] hover:rotate-0"
+                />
+              </div>
+
+              <div class="w-full md:w-1/3 text-center md:text-right">
+                <div
+                  class="text-left md:text-right max-w-xs mx-auto md:ml-auto hero-text-content"
+                >
+                  <p class="text-sm mb-4">
+                    A highly motivated and results-driven undergraduate at the
+                    University of Moratuwa. With a solid foundation in
+                    programming languages and hands-on project experience in
+                    full-stack development, I am eager to contribute my skills
+                    to a forward-thinking company.
+                  </p>
+                  <button
+                    class="px-6 py-3 bg-[#1a1a1a] text-white rounded-full text-sm font-medium tracking-wide"
+                  >
+                    <a href="#contact">Get in touch</a>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- About Section -->
+        <section
+          id="about"
+          class="py-24 md:py-32 bg-[#1a1a1a] text-white mb-16 px-4"
+        >
+          <div
+            class="container mx-auto px-4 relative flex flex-col md:flex-row items-center"
+          >
+            <div class="w-full md:w-1/3 flex justify-center mb-12 md:mb-0">
+              <div
+                class="relative w-[300px] h-[300px] md:w-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-lg about-image"
+              >
+                <img
+                  src="./assets/Avatar.jpeg"
+                  alt="Suganth U"
+                  class="object-cover w-full h-full"
+                />
+                <div
+                  class="absolute bottom-4 left-4 bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-medium"
+                >
+                  Available for Work
+                </div>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3 md:pl-16 about-text">
+              <div class="mb-4">
+                <p class="text-sm uppercase tracking-widest text-white/50">
+                  About Me
+                </p>
+              </div>
+              <h2 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                A passionate
+                <span class="text-yellow-400">Software Engineer</span> building
+                innovative solutions and turning ideas into reality.
+              </h2>
+              <p class="text-lg leading-relaxed mb-6">
+                A dedicated and results-driven undergraduate at the University
+                of Moratuwa. I'm eager to apply my strong foundation in
+                programming and my ability to learn quickly to contribute to a
+                fast-paced environment. My academic background and participation
+                in projects have given me a proven ability to collaborate and
+                solve problems.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span
+                    >Programming Languages: Java, C++, Python, JavaScript</span
+                  >
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span>Web Technologies: HTML5, CSS3, MERN, REST APIs</span>
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span>Databases: MySQL, MongoDB, PostgreSQL</span>
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span>Version Control: Git, GitHub, GitLab</span>
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span>Cloud Platforms: Google Cloud Platform (GCP), AWS</span>
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span>Methodologies: Agile, Scrum</span>
+                </div>
+                <div class="flex items-top space-x-2">
+                  <i class="fas fa-arrow-right text-yellow-400 mt-1"></i>
+                  <span
+                    >Soft Skills: Communication, Teamwork, Problem-Solving</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+                <!-- Resume Section -->
+        <section id="resume" class="py-12 px-4 sm:px-8 bg-[#fdfdfd] border-t border-gray-100">
+          <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col lg:flex-row space-y-12 lg:space-y-0 lg:space-x-12">
+              
+              <!-- Left Tab Section -->
+              <div class="w-full lg:w-1/3 space-y-6 text-center lg:text-left">
+                <div>
+                  <p class="text-sm uppercase tracking-widest text-gray-500 font-semibold mb-2">Resume</p>
+                  <h2 class="text-3xl sm:text-4xl font-bold leading-tight text-gray-900">
+                    <span class="text-yellow-500">Professional</span><br />
+                    Journey &<br />
+                    Expertise
+                  </h2>
+                </div>
+                
+                <div class="flex flex-col space-y-3 mt-8">
+                  <button class="tab-button bg-white border border-gray-100 shadow-sm w-full text-left py-4 px-6 rounded-xl transition-all duration-300 ease-in-out font-medium text-lg flex justify-between items-center hover:shadow-md hover:border-yellow-200 active" data-tab="about">
+                    <span class="flex items-center"><i class="fas fa-user text-yellow-500 mr-3"></i> About Me</span> <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                  </button>
+                  
+                  
+                  <button class="tab-button bg-white border border-gray-100 shadow-sm w-full text-left py-4 px-6 rounded-xl transition-all duration-300 ease-in-out font-medium text-lg flex justify-between items-center hover:shadow-md hover:border-yellow-200" data-tab="skills">
+                    <span class="flex items-center"><i class="fas fa-laptop-code text-yellow-500 mr-3"></i> Skills</span> <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                  </button>
+                  <button class="tab-button bg-white border border-gray-100 shadow-sm w-full text-left py-4 px-6 rounded-xl transition-all duration-300 ease-in-out font-medium text-lg flex justify-between items-center hover:shadow-md hover:border-yellow-200" data-tab="interests">
+                    <span class="flex items-center"><i class="fas fa-heart text-yellow-500 mr-3"></i> Interests</span> <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                  </button>
+                </div>
+              </div>
+  
+              <!-- Right Content Section -->
+              <div id="tab-content-container" class="w-full lg:w-2/3 relative min-h-[500px]">
+                
+                <!-- About Me Content -->
+                <div id="tab-about" class="tab-content opacity-100 translate-x-0 transition-all duration-500">
+                  <h3 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-yellow-400 inline-block pb-2">About Me</h3>
+                  <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="text-gray-700 leading-relaxed text-lg mb-8">
+                      A highly motivated and results-driven student pursuing a Bachelor of Information Technology at the University of Moratuwa. With a solid foundation in programming languages like Java, C#, and JavaScript, I am eager to contribute my skills to a forward-thinking company like Zebra Technologies. My academic background and hands-on project experience in full-stack development have prepared me to tackle complex problems and collaborate effectively in a team-based environment.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div class="flex items-center">
+                        <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center mr-4">
+                          <i class="fas fa-map-marker-alt text-yellow-600 text-xl"></i>
+                        </div>
+                        <div>
+                          <p class="text-sm text-gray-500 font-medium">Location</p>
+                          <p class="text-gray-800 font-semibold">Colombo, Sri Lanka</p>
+                        </div>
+                      </div>
+                      <div class="flex items-center">
+                        <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center mr-4">
+                          <i class="fas fa-envelope text-yellow-600 text-xl"></i>
+                        </div>
+                        <div>
+                          <p class="text-sm text-gray-500 font-medium">Email</p>
+                          <p class="text-gray-800 font-semibold">suganthdz@gmail.com</p>
+                        </div>
+                      </div>
+                      
+                      
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Skills Content -->
+                <div id="tab-skills" class="tab-content hidden absolute w-full top-0 opacity-0 translate-x-1/2 transition-all duration-500">
+                  <h3 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-yellow-400 inline-block pb-2">Technical & Professional Skills</h3>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    
+                    <!-- Frontend -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-desktop"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-3">Frontend Development</h4>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="bg-orange-50 text-orange-700 border border-orange-100 px-3 py-1 rounded-full text-sm font-medium">HTML5</span>
+                        <span class="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full text-sm font-medium">CSS3</span>
+                        <span class="bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 rounded-full text-sm font-medium">JavaScript</span>
+                        <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 px-3 py-1 rounded-full text-sm font-medium">React</span>
+                      </div>
+                    </div>
+
+                    <!-- Backend -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-server"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-3">Backend & Database</h4>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="bg-red-50 text-red-700 border border-red-100 px-3 py-1 rounded-full text-sm font-medium">Java</span>
+                        <span class="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full text-sm font-medium">Python</span>
+                        <span class="bg-sky-50 text-sky-700 border border-sky-100 px-3 py-1 rounded-full text-sm font-medium">MySQL</span>
+                      </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-tools"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-3">Tools & Version Control</h4>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="bg-gray-100 text-gray-700 border border-gray-200 px-3 py-1 rounded-full text-sm font-medium">Git & GitHub</span>
+                      </div>
+                    </div>
+
+                    <!-- Soft Skills -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-users"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-3">Soft Skills</h4>
+                      <div class="flex flex-wrap gap-2">
+                        <span class="bg-indigo-50 text-indigo-700 border border-indigo-100 px-3 py-1 rounded-full text-sm font-medium">Communication</span>
+                        <span class="bg-green-50 text-green-700 border border-green-100 px-3 py-1 rounded-full text-sm font-medium">Leadership</span>
+                        <span class="bg-purple-50 text-purple-700 border border-purple-100 px-3 py-1 rounded-full text-sm font-medium">Adaptability</span>
+                        <span class="bg-orange-50 text-orange-700 border border-orange-100 px-3 py-1 rounded-full text-sm font-medium">Detail-Oriented</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Personal Interests Content -->
+                <div id="tab-interests" class="tab-content hidden absolute w-full top-0 opacity-0 translate-x-1/2 transition-all duration-500">
+                  <h3 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-yellow-400 inline-block pb-2">Personal Interests</h3>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-futbol"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-2">Football Team Captain</h4>
+                      <p class="text-gray-600 text-sm">Demonstrated leadership, teamwork, and discipline through regular athletic competitions.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-campground"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-2">Scouts</h4>
+                      <p class="text-gray-600 text-sm">Active participation in scouts, fostering leadership skills and a commitment to community service.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-theater-masks"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-2">Cultural Events</h4>
+                      <p class="text-gray-600 text-sm">Participated in and organized various cultural events, celebrating diversity and arts.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 text-yellow-600 text-2xl">
+                        <i class="fas fa-bullhorn"></i>
+                      </div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-2">Public Activities</h4>
+                      <p class="text-gray-600 text-sm">Demonstrated leadership roles in public activities, improving public speaking and organizational skills.</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- Services -->
+        <section
+          id="services"
+          class="py-24 md:py-16 bg-[#f7f5f2] text-[#1a1a1a] px-8 mb-16"
+        >
+          <div class="container mx-auto services-container">
+            <p class="text-sm uppercase tracking-widest mb-4 text-gray-400">
+              Services
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-12">What I Do</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <!-- Service 1 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-laptop-code text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Frontend Web Development</h3>
+                <p class="text-sm text-gray-500">
+                  I build dynamic, responsive, and user-friendly web interfaces using modern technologies like React, JavaScript, HTML5, and CSS3.
+                </p>
+              </div>
+              <!-- Service 2 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-server text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Backend Architecture</h3>
+                <p class="text-sm text-gray-500">
+                  I design and implement robust server-side logic and scalable system architectures utilizing Java, Python, and C#.
+                </p>
+              </div>
+              <!-- Service 3 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-database text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Database Management</h3>
+                <p class="text-sm text-gray-500">
+                  I create, optimize, and manage relational databases with MySQL, ensuring data integrity, security, and high performance.
+                </p>
+              </div>
+              <!-- Service 4 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-cogs text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Full-Stack Integration</h3>
+                <p class="text-sm text-gray-500">
+                  I develop secure RESTful APIs to seamlessly connect powerful backend systems with interactive frontend applications.
+                </p>
+              </div>
+              <!-- Service 5 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-code-branch text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Agile & Version Control</h3>
+                <p class="text-sm text-gray-500">
+                  I manage collaborative development cycles efficiently using Git and GitHub, adhering to best practices in version control.
+                </p>
+              </div>
+              <!-- Service 6 -->
+              <div
+                class="service-card flex flex-col items-center text-center border border-gray-200 rounded-2xl p-8 py-16 hover:border-black transition-colors"
+              >
+                <div class="icon text-[50px] mb-4">
+                  <i class="fas fa-users text-yellow-500"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Leadership & Collaboration</h3>
+                <p class="text-sm text-gray-500">
+                  Leveraging my background as a sports captain and scout, I excel in team environments, focusing on communication and problem-solving.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section
+          id="projects"
+          class="py-24 md:py-32 bg-[#1a1a1a] text-white px-8"
+        >
+          <div class="container mx-auto projects-container">
+            <p class="text-sm uppercase tracking-widest mb-4 text-white/50">
+              My Projects
+            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-12">
+              What I've Built
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('project1')"
+              >
+                <img
+                  src="./assets/Hospital.png"
+                  alt="E-Hospital Management System"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    Web Application
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">
+                    E-Hospital Management System
+                  </h3>
+                  <p class="text-sm text-gray-400">
+                    A durable, standardized, and efficient E-Hospital system for
+                    Sri Lankan hospitals.
+                  </p>
+                </div>
+              </div>
+              <!-- Project 2: AI Tour Website -->
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('tourWebsite')"
+              >
+                <img
+                  src="./assets/Tour.png"
+                  alt="AI Tour Website"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    Web Application
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">AI Tour Website</h3>
+                  <p class="text-sm text-gray-400">
+                    A local experience-based tourism platform to help tourists
+                    plan trips and connect with local tour guides.
+                  </p>
+                </div>
+              </div>
+              <!-- Project 3: Food Delivery App -->
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('foodDeliveryApp')"
+              >
+                <img
+                  src="./assets/food.jpeg"
+                  alt="Food Delivery App"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    Mobile/Web Application
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">Food Delivery App</h3>
+                  <p class="text-sm text-gray-400">
+                    A platform for ordering food from local restaurants with
+                    real-time tracking and secure payments.
+                  </p>
+                </div>
+              </div>
+              <!-- Project 4: AI-Powered Healthcare -->
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('healthcareAI')"
+              >
+                <img
+                  src="./assets/Bot.png"
+                  alt="AI-Powered Healthcare"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    AI / Machine Learning
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">
+                    AI-Powered Healthcare Diagnostic Assistant
+                  </h3>
+                  <p class="text-sm text-gray-400">
+                    An AI model designed to assist healthcare professionals in
+                    analyzing medical data for faster, more accurate
+                    diagnostics.
+                  </p>
+                </div>
+              </div>
+              <!-- Project 5: Personal Blog & CMS -->
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('blogCms')"
+              >
+                <img
+                  src="./assets/Blog.png"
+                  alt="Personal Blog & CMS"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    Web Development
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">
+                    Personal Blog & Content Management System
+                  </h3>
+                  <p class="text-sm text-gray-400">
+                    A custom-built blogging platform with a full content
+                    management system for creating and publishing articles.
+                  </p>
+                </div>
+              </div>
+                          <!-- Project 6: Task Management Dashboard -->
+              <div
+                class="project-card bg-[#2b2b2b] rounded-2xl overflow-hidden cursor-pointer"
+                onclick="openModal('taskDashboard')"
+              >
+                <img
+                  src="./assets/Task.png"
+                  alt="Task Management Dashboard"
+                  class="w-full h-48 object-cover"
+                />
+                <div class="p-6">
+                  <p class="text-xs uppercase text-white/50 mb-2">
+                    Web Application
+                  </p>
+                  <h3 class="text-xl font-bold mb-1">
+                    Task Management Dashboard
+                  </h3>
+                  <p class="text-sm text-gray-400">
+                    A comprehensive productivity tool designed to track tasks, collaborate with team members, and monitor project progress.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <!-- Contact Section -->
+        <section
+          id="contact"
+          class="p-14 mb-6 mt-6 contact-section-content text-black"
+        >
+          <h2 class="text-4xl md:text-5xl font-bold mb-12">CONTACT ME</h2>
+          <div
+            class="flex flex-col md:flex-row space-y-12 md:space-y-0 md:space-x-12"
+          >
+            <!-- Contact Info -->
+            <div class="w-full md:w-1/3 space-y-8 mt-[30px] content">
+              <div>
+                <div class="flex items-center mb-1">
+                  <i class="fas fa-headphones-alt text-xl text-gray-700"></i>
+                  <p class="uppercase text-sm ml-3 font-medium tracking-widest">
+                    CONTACT NUMBER:
+                  </p>
+                </div>
+                <p class="text-gray-500 ml-7 mt-[-5px]">(+94) 701796765</p>
+              </div>
+              <div>
+                <div class="flex items-center mb-1">
+                  <i class="fas fa-envelope text-xl text-gray-700"></i>
+                  <p class="uppercase text-sm ml-3 font-medium tracking-widest">
+                    EMAIL ME:
+                  </p>
+                </div>
+                <p class="text-gray-500 ml-7 mt-[-4px]">suganthdz@mail.com</p>
+              </div>
+              <div class="pt-8">
+                <p class="uppercase text-sm font-medium tracking-widest mb-4">
+                  SOCIALS
+                </p>
+                <div class="flex space-x-4 text-xl">
+                  <a
+                    href="https://www.facebook.com"
+                    target="_blank"
+                    class="text-gray-700 hover:text-black transition-colors"
+                    ><i class="fab fa-facebook-f"></i
+                  ></a>
+                  <a
+                    href="https://www.twitter.com"
+                    target="_blank"
+                    class="text-gray-700 hover:text-black transition-colors"
+                    ><i class="fab fa-twitter"></i
+                  ></a>
+                  <a
+                    href="https://www.linkedin.com"
+                    target="_blank"
+                    class="text-gray-700 hover:text-black transition-colors"
+                    ><i class="fab fa-linkedin-in"></i
+                  ></a>
+                  <a
+                    href="https://github.com"
+                    target="_blank"
+                    class="text-xl text-[#1a1a1a] hover:text-gray-600 transition-colors"
+                  >
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div
+              class="w-full md:w-2/3 p-8 border border-gray-300 rounded-2xl bg-white shadow-lg text-black"
+            >
+              <form
+                id="contactForm"
+                action="https://api.web3forms.com/submit"
+                method="POST"
+                class="space-y-6"
+              >
+                <!-- Replace 'YOUR_ACCESS_KEY_HERE' with your Web3Forms access key -->
+                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+
+                <div
+                  class="flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0"
+                >
+                  <div class="flex-1">
+                    <label
+                      for="name"
+                      class="uppercase text-xs font-medium tracking-widest text-gray-500"
+                      >Full Name</label
+                    >
+                    <div class="relative mt-2">
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Full name"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      />
+                      <i
+                        class="fas fa-user absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <label
+                      for="email"
+                      class="uppercase text-xs font-medium tracking-widest text-gray-500"
+                      >Email Address</label
+                    >
+                    <div class="relative mt-2">
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="your@gmail.com"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      />
+                      <i
+                        class="fas fa-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Subject -->
+                <div>
+                  <label
+                    for="subject"
+                    class="uppercase text-xs font-medium tracking-widest text-gray-500"
+                    >Subject</label
+                  >
+                  <div class="relative mt-2">
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      placeholder="Your Subject"
+                      required
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    />
+                    <i
+                      class="fas fa-tag absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    ></i>
+                  </div>
+                </div>
+
+                <!-- Message -->
+                <div>
+                  <label
+                    for="message"
+                    class="uppercase text-xs font-medium tracking-widest text-gray-500"
+                    >Your Message</label
+                  >
+                  <div class="relative mt-2">
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows="5"
+                      placeholder="Write Your message"
+                      required
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    ></textarea>
+                    <i
+                      class="fas fa-pen absolute right-4 top-4 text-gray-400"
+                    ></i>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center md:justify-start">
+                  <button
+                    type="submit"
+                    class="bg-[#1a1a1a] text-white py-3 px-8 rounded-full text-sm font-medium tracking-wide flex items-center space-x-2 hover:bg-black transition-colors"
+                  >
+                    <span>Send Me Message</span>
+                    <i class="fas fa-arrow-right"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+        <!-- Collaborate -->
+        <section
+          class="bg-[#1a1a1a] text-white px-8 py-24 md:py-32 mb-5 text-center collaborate"
+        >
+          <p class="text-sm font-medium uppercase tracking-widest mb-4 content">
+            Have a project in mind?
+          </p>
+          <h2
+            class="text-6xl md:text-[8rem] font-bold leading-none tracking-tight uppercase mb-4 content"
+          >
+            Lets Work
+          </h2>
+          <div class="flex justify-center items-center space-x-4 content">
+            <a
+              href="mailto:suganthdz@gmail.com"
+              class="text-sm text-gray-500 font-[100]"
+              >Drop me a message: suganthdz@gmail.com</a
+            >
+          </div>
+        </section>
+        <!-- Scroll to top -->
+        <button
+          class="scroll-to-top flex items-center justify-center"
+          onclick="scrollToTop()"
+        >
+          <img src="./assets/upload.png" alt="Scroll to Top" width="15px" />
+        </button>
+        <!-- Footer -->
+        <footer
+          class="text-black text-center p-6 flex items-center justify-center mt-[-16px]"
+        >
+          <div class="container mx-auto">
+            <p>&copy; 2025 Suganth U. All Rights Reserved.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Project Details Modal -->
+        <div id="projectModal" class="modal">
+          <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div
+              id="modal-content-inner"
+              class="flex flex-col md:flex-row gap-8"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Modal Overlay -->
+        <div id="statusModal" class="modal-overlay">
+          <div class="modal-overlay-content text-black">
+            <div id="modal-icon" class="text-6xl mb-4"></div>
+            <p id="modal-message" class="text-xl font-semibold"></p>
+            <button
+              id="closeModalButton"
+              class="mt-6 bg-gray-200 text-gray-800 py-2 px-6 rounded-full hover:bg-gray-300 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+
+    <script>
+      const body = document.body;
+      const innerCursor = document.querySelector(".cursor-inner");
+      const outerCursor = document.querySelector(".cursor-ball");
+      const links = document.querySelectorAll("a, button");
+      const navLinks = document.querySelectorAll("a.nav-link");
+      const scrollToTopBtn = document.querySelector(".scroll-to-top");
+
+      document.addEventListener("mousemove", (e) => {
+        innerCursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        outerCursor.style.transform = `translate(${
+          e.clientX - outerCursor.offsetWidth / 2
+        }px, ${e.clientY - outerCursor.offsetHeight / 2}px)`;
+      });
+
+      links.forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          outerCursor.classList.add("hovered");
+        });
+        link.addEventListener("mouseleave", () => {
+          outerCursor.classList.remove("hovered");
+        });
+      });
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          if (targetId && targetId !== "#") {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop,
+                behavior: "smooth",
+              });
+            }
+          }
+        });
+      });
+
+      gsap.registerPlugin(ScrollSmoother);
+
+      ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.2,
+        effects: true,
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          scrollToTopBtn.classList.add("show");
+        } else {
+          scrollToTopBtn.classList.remove("show");
+        }
+      });
+
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      const modal = document.getElementById("projectModal");
+      const modalContent = document.getElementById("modal-content-inner");
+
+      const projects = {
+        project1: {
+          image: "./assets/Hospital.jpeg",
+          category: "Web Application",
+          title: "E-Hospital Management System",
+          description:
+            "This project addresses challenges in Sri Lanka's hospital management by creating a durable, standardised, and efficient E-Hospital system. I developed functionalities for online appointment booking, issuing digital prescriptions, maintaining secure electronic health records, and integrating with online pharmacies.",
+          details:
+            "The project was developed using a well-defined methodology, demonstrating an understanding of the software development life cycle, including design, development, testing, and validation.",
+        },
+        tourWebsite: {
+          image: "./assets/Tour.jpeg",
+          category: "Web Application",
+          title: "AI Tour Website",
+          description:
+            "A user-friendly website to help tourists plan trips and connect with local tour guides in Sri Lanka. It aims to provide a safe and user-friendly experience for travelers while promoting local tourism.",
+          details:
+            "The system includes key features like secure booking and payment, multi-language support, and a review/rating system to help others make smart and trusted travel choices. It was built using ReactJS, HTML, CSS, and JavaScript for the frontend, with a PHP backend and MySQL database.",
+        },
+        foodDeliveryApp: {
+          image: "./assets/food.jpeg",
+          category: "Mobile/Web Application",
+          title: "Food Delivery App",
+          description:
+            "A comprehensive food ordering and delivery platform that connects users with local restaurants. The system is designed for both mobile and web use, providing a seamless ordering experience.",
+          details:
+            "Key features of the app include user authentication, a searchable list of restaurants, a shopping cart, secure payment gateways, and real-time order tracking. This project showcases my abilities in full-stack development and creating intuitive, user-centric applications.",
+        },
+        healthcareAI: {
+          image: "./assets/Arti.jpg",
+          category: "AI / Machine Learning",
+          title: "AI-Powered Healthcare Diagnostic Assistant",
+          description:
+            "An AI model designed to assist healthcare professionals in analyzing medical images and patient data to provide preliminary diagnostic insights. It uses a custom-trained model to identify patterns and anomalies.",
+          details:
+            "This project leverages machine learning algorithms to improve diagnostic accuracy and efficiency in a clinical setting. It demonstrates a strong understanding of data processing, model training, and integration of AI into practical applications.",
+        },
+        blogCms: {
+          image: "./assets/Blog.jpeg",
+          category: "Web Development",
+          title: "Personal Blog & Content Management System",
+          description:
+            "A custom-built blogging platform with a full content management system. This project demonstrates skills in building a robust back-end for content creation and a dynamic front-end for public viewing.",
+          details:
+            "Key features include a markdown editor, user authentication for authors, a responsive design, and an admin dashboard to manage posts, comments, and user roles.",
+        },
+        taskDashboard: {
+          image: "./assets/about.jpeg",
+          category: "Web Application",
+          title: "Task Management Dashboard",
+          description: "A comprehensive productivity tool designed to track tasks, collaborate with team members, and monitor project progress efficiently.",
+          details: "Features include drag-and-drop Kanban boards, real-time collaboration, role-based access control, and performance analytics. Built using React, Node.js, and a MongoDB backend to ensure rapid performance and seamless synchronization across users."
+        },
+      };
+
+      function openModal(projectId) {
+        const project = projects[projectId];
+        if (!project) return;
+
+        modalContent.innerHTML = `
+                <div class="w-full md:w-1/2 mb-4 md:mb-0">
+                    <img src="${project.image}" alt="${project.title}" class="w-full h-auto rounded-xl">
+                </div>
+                <div class="w-full md:w-1/2">
+                    <p class="text-sm uppercase tracking-widest text-white/50 mb-2">${project.category}</p>
+                    <h2 class="text-3xl md:text-4xl font-bold leading-tight mb-4">${project.title}</h2>
+                    <p class="text-sm text-gray-300 mb-6">${project.description}</p>
+                    <p class="text-sm text-gray-300">${project.details}</p>
+                    <div class="mt-6 flex space-x-4">
+                        <button class="px-6 py-3 bg-white/10 text-white rounded-full text-sm font-medium tracking-wide transition-colors hover:bg-white/20">
+                            View Project
+                        </button>
+                    </div>
+                </div>
+            `;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          closeModal();
+        }
+      };
+
+      // GSAP
+      window.addEventListener("load", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from("header .logo, header .nav-links a", {
+          opacity: 0,
+          y: -20,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+        });
+
+        gsap.from(".hero-title", {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          delay: 0.5,
+        });
+
+        gsap.from(".hero-image-container", {
+          scale: 0.8,
+          opacity: 0,
+          duration: 1.2,
+          ease: "back.out(1.7)",
+          delay: 0.8,
+        });
+
+        gsap.from(
+          ".hero-text-content p, .hero-text-content button, .social-links a,.collaborate .content",
+          {
+            x: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.out",
+            stagger: 0.2,
+            delay: 1,
+          }
+        );
+
+        gsap.from("#about .about-text", {
+          x: 100,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#about",
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+
+        gsap.from("#about .about-image", {
+          x: -100,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#about",
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+
+        gsap.from(".services-container .service-card", {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.2,
+          scrollTrigger: {
+            trigger: ".services-container",
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+
+        gsap.from(".projects-container .project-card", {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.2,
+          scrollTrigger: {
+            trigger: ".projects-container",
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+
+        gsap.from(".contact-section-content", {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#contact",
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+        });
+      });
+      // Tab functionality with GSAP animation
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabContents = document.querySelectorAll(".tab-content");
+      const contentContainer = document.getElementById("tab-content-container");
+
+      // Initial height setting for the container
+      const activeTab = document.querySelector(".tab-button.active");
+      const initialContent = document.getElementById(
+        `tab-${activeTab.dataset.tab}`
+      );
+      if (initialContent) {
+        contentContainer.style.height = `${initialContent.offsetHeight}px`;
+      }
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const tabId = button.dataset.tab;
+
+          // Remove active class from all buttons and add to the clicked one
+          tabButtons.forEach((btn) => {
+            btn.classList.remove("active", "bg-black", "text-white");
+            btn.classList.add("bg-white");
+          });
+          button.classList.add("active", "bg-black", "text-white");
+          button.classList.remove("bg-white");
+
+          // Animate out the current visible content
+          const currentContent = document.querySelector(
+            ".tab-content:not(.hidden)"
+          );
+          if (currentContent) {
+            gsap.to(currentContent, {
+              opacity: 0,
+              x: -50,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => {
+                currentContent.classList.add("hidden");
+                currentContent.style.opacity = ""; // Reset opacity for next animation
+                currentContent.style.transform = ""; // Reset transform for next animation
+              },
+            });
+          }
+
+          // Animate in the new content
+          const newContent = document.getElementById(`tab-${tabId}`);
+          if (newContent) {
+            newContent.classList.remove("hidden");
+            // Animate container height
+            gsap.to(contentContainer, {
+              height: newContent.offsetHeight,
+              duration: 0.5,
+              ease: "power2.inOut",
+            });
+            gsap.fromTo(
+              newContent,
+              { opacity: 0, x: 50 },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.5,
+                delay: 0.3, // Delay to allow the old content to animate out first
+                ease: "power2.out",
+              }
+            );
+          }
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+        const skillItems = document.querySelectorAll(".skill-item");
+
+        const updateProgressBars = () => {
+          skillItems.forEach((item) => {
+            const percent = item.getAttribute("data-percent");
+            const progressBar = item.querySelector(".progress-bar");
+            if (progressBar) {
+              progressBar.style.width = `${percent}%`;
+            }
+          });
+        };
+
+        // Initial state update
+        updateProgressBars();
+
+        tabButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const targetTabId = button.getAttribute("data-tab");
+
+            // Deactivate all buttons and hide all content
+            tabButtons.forEach((btn) => btn.classList.remove("active"));
+            tabContents.forEach((content) => {
+              content.classList.add("hidden", "opacity-0", "translate-x-1/2");
+              content.classList.remove("opacity-100", "translate-x-0");
+            });
+
+            // Activate the clicked button
+            button.classList.add("active");
+
+            // Show the target content
+            const targetContent = document.getElementById(`tab-${targetTabId}`);
+            if (targetContent) {
+              // Use a small delay to ensure the hidden class is removed before the transition
+              setTimeout(() => {
+                targetContent.classList.remove("hidden");
+                setTimeout(() => {
+                  targetContent.classList.remove(
+                    "opacity-0",
+                    "translate-x-1/2"
+                  );
+                  targetContent.classList.add("opacity-100", "translate-x-0");
+                }, 10);
+              }, 10);
+            }
+
+            // Update progress bars only when the skills tab is active
+            if (targetTabId === "skills") {
+              updateProgressBars();
+            }
+          });
+        });
+      });
+
+      // Modal Logic
+      const statusModal = document.getElementById("statusModal");
+      const modalMessage = document.getElementById("modal-message");
+      const modalIcon = document.getElementById("modal-icon");
+      const closeModalButton = document.getElementById("closeModalButton");
+      const contactForm = document.getElementById("contactForm");
+
+      function showStatusModal(message, isSuccess) {
+        modalMessage.textContent = message;
+        if (isSuccess) {
+          modalIcon.innerHTML = `<i class="fas fa-check-circle"></i>`;
+          modalIcon.classList.add("modal-success");
+          modalIcon.classList.remove("modal-error");
+        } else {
+          modalIcon.innerHTML = `<i class="fas fa-times-circle"></i>`;
+          modalIcon.classList.add("modal-error");
+          modalIcon.classList.remove("modal-success");
+        }
+        statusModal.classList.add("visible");
+      }
+
+      function hideStatusModal() {
+        statusModal.classList.remove("visible");
+      }
+
+      closeModalButton.addEventListener("click", hideStatusModal);
+
+      // Form submission handler
+      contactForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+
+        try {
+          const response = await fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: { Accept: "application/json" },
+          });
+
+          if (response.ok) {
+            showStatusModal("Your message has been sent successfully!", true);
+            form.reset();
+          } else {
+            showStatusModal(
+              "Oops! Something went wrong. Please try again.",
+              false
+            );
+          }
+        } catch (error) {
+          showStatusModal(
+            "Oops! A network error occurred. Please try again.",
+            false
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
